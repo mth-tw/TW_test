@@ -1,181 +1,266 @@
+
 <!DOCTYPE html>
 <html lang="da">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>TimeWinder 2027 – Program</title>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
 
-/* Grundlæggende */
+/* ==================================
+   TIMEWINDER PROGRAM
+================================== */
+
 .tw-program {
-  width: 100%;
-  font-family: Arial, sans-serif;
-  box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    color: #292929;
+    box-sizing: border-box;
 }
 
-.tw-program * {
-  box-sizing: border-box;
+.tw-program *,
+.tw-program *::before,
+.tw-program *::after {
+    box-sizing: border-box;
 }
 
-/* FANER */
-.tw-program input[type="radio"] {
-  display: none !important;
+/* ==================================
+   DAGSKNAPPER
+================================== */
+
+.tw-program .day-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
 }
 
-.tw-program .tw-knapper {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 20px;
+.tw-program .day-tabs input {
+    display: none;
 }
 
-.tw-program .tw-knapper label {
-  flex: 1;
-  padding: 13px 5px;
-  text-align: center;
-  background: #F58114;
-  color: #fff;
-  font-weight: bold;
-  cursor: pointer;
-  border-radius: 5px;
+.tw-program .day-tabs label {
+    flex: 1;
+    min-width: 100px;
+    text-align: center;
+    background: #F58114;
+    color: #ffffff;
+    padding: 13px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    transition: background 0.2s ease;
 }
 
-.tw-program .tw-indhold {
-  display: none !important;
+.tw-program .day-tabs label:hover {
+    background: #D96F0D;
 }
 
-.tw-program #tw-fredag:checked ~ #tw-fredag-indhold,
-.tw-program #tw-loerdag:checked ~ #tw-loerdag-indhold,
-.tw-program #tw-soendag:checked ~ #tw-soendag-indhold {
-  display: block !important;
+/* Aktiv dag */
+
+#tw-friday:checked ~ .day-tabs label[for="tw-friday"],
+#tw-saturday:checked ~ .day-tabs label[for="tw-saturday"],
+#tw-sunday:checked ~ .day-tabs label[for="tw-sunday"] {
+    background: #C96B12;
 }
 
-.tw-program #tw-fredag:checked ~ .tw-knapper label[for="tw-fredag"],
-.tw-program #tw-loerdag:checked ~ .tw-knapper label[for="tw-loerdag"],
-.tw-program #tw-soendag:checked ~ .tw-knapper label[for="tw-soendag"] {
-  background: #C96B12;
+/* ==================================
+   PROGRAMINDHOLD
+================================== */
+
+.tw-program .day-content {
+    display: none;
 }
 
-/* OVERSKRIFTER */
-.tw-program .tw-overskrift {
-  margin: 0 0 18px 0;
-  font-size: 24px;
+#tw-friday:checked ~ .program-content .friday,
+#tw-saturday:checked ~ .program-content .saturday,
+#tw-sunday:checked ~ .program-content .sunday {
+    display: block;
 }
 
-/* TABELLER */
+.tw-program .day-heading {
+    font-size: 23px;
+    font-weight: bold;
+    margin: 0 0 18px 0;
+    color: #292929;
+}
+
+/* ==================================
+   PROGRAMTABEL
+================================== */
+
 .tw-program .program-tabel {
-  margin: 0 0 25px 0;
-  width: 100%;
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
 }
 
-.tw-program .program-tabel table {
-  width: 100%;
-  table-layout: fixed;
-  border-collapse: collapse;
+.tw-program .program-tabel th {
+    text-align: left;
+    padding: 12px 10px;
+    background: #F58114;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.tw-program .program-tabel th:first-child {
+    width: 20%;
+}
+
+.tw-program .program-tabel th:nth-child(2) {
+    width: 70%;
+}
+
+.tw-program .program-tabel th:last-child {
+    width: 10%;
+    text-align: center;
 }
 
 .tw-program .program-tabel td {
-  padding: 12px 10px;
-  border-bottom: 1px solid #ddd;
-  vertical-align: top;
-  text-align: left;
+    padding: 15px 10px;
+    border-bottom: 1px solid #dddddd;
+    vertical-align: top;
 }
 
-.tw-program .program-tabel td:first-child {
-  width: 20%;
+.tw-program .program-tabel tr:hover {
+    background: #fff8f1;
 }
 
-.tw-program .program-tabel td:nth-child(2) {
-  width: 70%;
+/* Tid */
+
+.tw-program .program-tid {
+    font-weight: 900;
+    white-space: nowrap;
 }
 
-.tw-program .program-tabel td:nth-child(3) {
-  width: 10%;
+/* Aktivitet */
+
+.tw-program .program-aktivitet {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 5px;
 }
 
-/* LOKATION */
-.tw-program .tw-lokation {
-  font-size: 13px;
+/* Lokation */
+
+.tw-program .program-lokation {
+    font-size: 13px;
+    font-weight: normal;
+    color: #555555;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
-/* EMOJI */
-.tw-program .tw-emoji {
-  text-align: center !important;
-  vertical-align: middle !important;
-  font-size: 30px;
-  padding: 8px 3px !important;
+/* Lokationsikon – indbygget SVG */
+
+.tw-program .location-icon {
+    width: 13px;
+    height: 13px;
+    flex-shrink: 0;
+    display: inline-block;
+    vertical-align: middle;
 }
 
-/* MOBILVISNING */
+/* Emoji */
+
+.tw-program .program-emoji {
+    text-align: center;
+    font-size: 22px;
+    vertical-align: top;
+}
+
+/* ==================================
+   MOBILVISNING
+================================== */
+
 @media (max-width: 600px) {
 
-  .tw-program .tw-knapper {
-    gap: 5px;
-  }
+    .tw-program .day-tabs {
+        gap: 6px;
+        margin-bottom: 20px;
+    }
 
-  .tw-program .tw-knapper label {
-    padding: 12px 3px;
-    font-size: 14px;
-  }
+    .tw-program .day-tabs label {
+        min-width: 0;
+        padding: 12px 6px;
+        font-size: 14px;
+    }
 
-  .tw-program .tw-overskrift {
-    font-size: 21px;
-  }
+    .tw-program .day-heading {
+        font-size: 20px;
+    }
 
-  .tw-program .program-tabel table,
-  .tw-program .program-tabel tbody,
-  .tw-program .program-tabel tr,
-  .tw-program .program-tabel td {
-    display: block;
-    width: 100% !important;
-  }
+    /* Tabellen bliver til aktivitetskort */
 
-  .tw-program .program-tabel tr {
-    position: relative;
-    border: none !important;
-    margin: 0 0 15px 0;
-    padding: 0 0 10px 0;
-  }
+    .tw-program .program-tabel,
+    .tw-program .program-tabel tbody {
+        display: block;
+        width: 100%;
+    }
 
-  .tw-program .program-tabel td {
-    border: none !important;
-    box-shadow: none !important;
-  }
+    .tw-program .program-tabel thead {
+        display: none;
+    }
 
-  /* Tidspunkt øverst til venstre */
-  .tw-program .program-tabel tr td:first-child {
-    width: calc(100% - 55px) !important;
-    font-weight: bold;
-    padding: 0 55px 4px 0 !important;
-  }
+    .tw-program .program-tabel tr {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto auto;
+        width: 100%;
+        padding: 12px 0;
+        margin: 0;
+        border-bottom: 1px solid #dddddd;
+    }
 
-  /* Aktivitet og lokation nedenunder */
-  .tw-program .program-tabel tr td:nth-child(2) {
-    padding: 4px 0 0 0 !important;
-  }
+    .tw-program .program-tabel td {
+        display: block;
+        width: 100% !important;
+        border: none;
+        padding: 3px 5px;
+        box-shadow: none;
+    }
 
-  /* Emoji øverst til højre */
-  .tw-program .program-tabel tr td:nth-child(3) {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 50px !important;
-    padding: 0 !important;
-    text-align: center !important;
-    font-size: 30px;
-  }
+    /* Tid øverst til venstre */
 
-  .tw-program .program-tabel tr:not(:last-child) {
-    border-bottom: 1px solid #ddd !important;
-  }
+    .tw-program .program-tabel td:first-child {
+        grid-column: 1;
+        grid-row: 1;
+        font-weight: 900;
+        padding-bottom: 4px;
+    }
 
-  .tw-program .program-tabel td strong,
-  .tw-program .program-tabel td b,
-  .tw-program .program-tabel td .program-tid {
-    font-weight: 900 !important;
-    -webkit-text-stroke: 0.4px currentColor;
-  }
+    /* Aktivitet og lokation nedenunder */
+
+    .tw-program .program-tabel td:nth-child(2) {
+        grid-column: 1;
+        grid-row: 2;
+    }
+
+    /* Emoji øverst til højre */
+
+    .tw-program .program-tabel td:last-child {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        text-align: right;
+        padding: 3px 8px 0 10px;
+        font-size: 22px;
+        white-space: nowrap;
+    }
+
+    .tw-program .program-aktivitet {
+        font-size: 15px;
+    }
+
+    .tw-program .program-lokation {
+        font-size: 13px;
+    }
+
 }
 
 </style>
@@ -185,145 +270,158 @@
 
 <div class="tw-program">
 
-<!-- FANER -->
-<input type="radio" name="tw-dag" id="tw-fredag" checked>
-<input type="radio" name="tw-dag" id="tw-loerdag">
-<input type="radio" name="tw-dag" id="tw-soendag">
+    <!-- DAGSVÆLGER -->
 
-<div class="tw-knapper">
-  <label for="tw-fredag">Fredag</label>
-  <label for="tw-loerdag">Lørdag</label>
-  <label for="tw-soendag">Søndag</label>
-</div>
+    <input type="radio" name="tw-day" id="tw-friday" checked>
+    <input type="radio" name="tw-day" id="tw-saturday">
+    <input type="radio" name="tw-day" id="tw-sunday">
 
-<!-- FREDAG -->
-<div id="tw-fredag-indhold" class="tw-indhold">
+    <div class="day-tabs">
+        <label for="tw-friday">Fredag</label>
+        <label for="tw-saturday">Lørdag</label>
+        <label for="tw-sunday">Søndag</label>
+    </div>
 
-  <h2 class="tw-overskrift">Fredag 14. maj 2027</h2>
+    <!-- PROGRAM -->
 
-  <figure class="program-tabel">
-    <table>
-      <colgroup>
-        <col style="width:20%;">
-        <col style="width:70%;">
-        <col style="width:10%;">
-      </colgroup>
-      <tbody>
+    <div class="program-content">
 
-        <tr>
-          <td>Fredag<br><b>12:00 - 14:00</b></td>
-          <td>
-            TimeWinder åbner<br>
-            <span class="tw-lokation">
-              <i class="fa-solid fa-location-dot" style="font-size:13px; color:#F58114; vertical-align:middle;"></i>
-              Dampskibet
-            </span>
-          </td>
-          <td class="tw-emoji">🎵</td>
-        </tr>
+        <!-- FREDAG -->
 
-        <tr>
-          <td>Fredag<br><b>12:00 - 14:00</b></td>
-          <td>
-            TimeWinder åbner<br>
-            <span class="tw-lokation">
-              <i class="fa-solid fa-location-dot" style="font-size:13px; color:#F58114; vertical-align:middle;"></i>
-              Dampskibet
-            </span>
-          </td>
-          <td class="tw-emoji">🚗</td>
-        </tr>
+        <div class="day-content friday">
 
-      </tbody>
-    </table>
-  </figure>
-</div>
+            <h2 class="day-heading">Fredag 14. maj 2027</h2>
 
-<!-- LØRDAG ------------------------------------------------------------------------------------------------------------------------------------------------------------------------>
-<div id="tw-loerdag-indhold" class="tw-indhold">
+            <table class="program-tabel">
+                <thead>
+                    <tr>
+                        <th>Tid</th>
+                        <th>Aktivitet</th>
+                        <th></th>
+                    </tr>
+                </thead>
 
-  <h2 class="tw-overskrift">Lørdag 15. maj 2027</h2>
+                <tbody>
+                    <tr>
+                        <td class="program-tid">10.00</td>
+                        <td>
+                            <div class="program-aktivitet">
+                                TimeWinder åbner
+                            </div>
 
-  <figure class="program-tabel">
-    <table>
-      <colgroup>
-        <col style="width:20%;">
-        <col style="width:70%;">
-        <col style="width:10%;">
-      </colgroup>
-      <tbody>
+                            <div class="program-lokation">
+                                <svg class="location-icon"
+                                     xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 24 24"
+                                     fill="none"
+                                     stroke="#F58114"
+                                     stroke-width="2.5"
+                                     stroke-linecap="round"
+                                     stroke-linejoin="round">
+                                    <path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/>
+                                    <circle cx="12" cy="10" r="2.5"/>
+                                </svg>
+                                Dampskibet
+                            </div>
+                        </td>
+                        <td class="program-emoji">🎵</td>
+                    </tr>
+                </tbody>
+            </table>
 
-        <tr>
-          <td>Lørdag<br><b>10:00 - 12:00</b></td>
-          <td>
-            TimeWinder åbner<br>
-            <span class="tw-lokation">
-              <i class="fa-solid fa-location-dot" style="font-size:13px; color:#F58114; vertical-align:middle;"></i>
-              Dampskibet
-            </span>
-          </td>
-          <td class="tw-emoji">🧒</td>
-        </tr>
+        </div>
 
-        <tr>
-          <td>Lørdag<br><b>10:00 - 12:00</b></td>
-          <td>
-            Lørdagens aktivitet<br>
-            <span class="tw-lokation">
-              <i class="fa-solid fa-location-dot" style="font-size:13px; color:#F58114; vertical-align:middle;"></i>
-              Dampskibet
-            </span>
-          </td>
-          <td class="tw-emoji">✈️</td>
-        </tr>
+        <!-- LØRDAG -->
 
-      </tbody>
-    </table>
-  </figure>
-</div>
+        <div class="day-content saturday">
 
-<!-- SØNDAG -->
-<div id="tw-soendag-indhold" class="tw-indhold">
+            <h2 class="day-heading">Lørdag 15. maj 2027</h2>
 
-  <h2 class="tw-overskrift">Søndag 16. maj 2027</h2>
+            <table class="program-tabel">
+                <thead>
+                    <tr>
+                        <th>Tid</th>
+                        <th>Aktivitet</th>
+                        <th></th>
+                    </tr>
+                </thead>
 
-  <figure class="program-tabel">
-    <table>
-      <colgroup>
-        <col style="width:20%;">
-        <col style="width:70%;">
-        <col style="width:10%;">
-      </colgroup>
-      <tbody>
+                <tbody>
+                    <tr>
+                        <td class="program-tid">10.00</td>
+                        <td>
+                            <div class="program-aktivitet">
+                                Lørdagens aktivitet
+                            </div>
 
-        <tr>
-          <td>Søndag<br><b>10:00 - 12:00</b></td>
-          <td>
-            Søndagens aktivitet<br>
-            <span class="tw-lokation">
-              <i class="fa-solid fa-location-dot" style="font-size:13px; color:#F58114; vertical-align:middle;"></i>
-              Dampskibet
-            </span>
-          </td>
-          <td class="tw-emoji">🎪</td>
-        </tr>
+                            <div class="program-lokation">
+                                <svg class="location-icon"
+                                     xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 24 24"
+                                     fill="none"
+                                     stroke="#F58114"
+                                     stroke-width="2.5"
+                                     stroke-linecap="round"
+                                     stroke-linejoin="round">
+                                    <path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/>
+                                    <circle cx="12" cy="10" r="2.5"/>
+                                </svg>
+                                Dampskibet
+                            </div>
+                        </td>
+                        <td class="program-emoji">✈️</td>
+                    </tr>
+                </tbody>
+            </table>
 
-        <tr>
-          <td>Søndag<br><b>10:00 - 12:00</b></td>
-          <td>
-            Søndagens aktivitet<br>
-            <span class="tw-lokation">
-              <i class="fa-solid fa-location-dot" style="font-size:13px; color:#F58114; vertical-align:middle;"></i>
-              Dampskibet
-            </span>
-          </td>
-          <td class="tw-emoji">🚜</td>
-        </tr>
+        </div>
 
-      </tbody>
-    </table>
-  </figure>
-</div>
+        <!-- SØNDAG -->
+
+        <div class="day-content sunday">
+
+            <h2 class="day-heading">Søndag 16. maj 2027</h2>
+
+            <table class="program-tabel">
+                <thead>
+                    <tr>
+                        <th>Tid</th>
+                        <th>Aktivitet</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td class="program-tid">10.00</td>
+                        <td>
+                            <div class="program-aktivitet">
+                                Søndagens aktivitet
+                            </div>
+
+                            <div class="program-lokation">
+                                <svg class="location-icon"
+                                     xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 24 24"
+                                     fill="none"
+                                     stroke="#F58114"
+                                     stroke-width="2.5"
+                                     stroke-linecap="round"
+                                     stroke-linejoin="round">
+                                    <path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/>
+                                    <circle cx="12" cy="10" r="2.5"/>
+                                </svg>
+                                Dampskibet
+                            </div>
+                        </td>
+                        <td class="program-emoji">🚜</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
 
 </div>
 
